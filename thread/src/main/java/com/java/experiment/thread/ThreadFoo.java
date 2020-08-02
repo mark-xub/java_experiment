@@ -16,28 +16,7 @@ public class ThreadFoo {
 
   public static void main(String[] args) throws Exception {
     List<Object> lockLists = generateLocks(threadNum);
-    Supplier<Integer> consumerA = () -> {
-      if(num <= endPoint) {
-        System.out.println("A:" + num);
-      }
-      return num++;
-    };
-    Supplier<Integer> consumerB = () -> {
-      if(num <= endPoint) {
-        System.out.println("B:" + num);
-      }
-      return num++;
-    };
-    Supplier<Integer> consumerC = () -> {
-      if(num <= endPoint) {
-        System.out.println("C:" + num);
-      }
-      return num++;
-    };
-    List<Supplier<Integer>> consumerList = new ArrayList<>(threadNum);
-    consumerList.add(consumerA);
-    consumerList.add(consumerB);
-    consumerList.add(consumerC);
+    List<Supplier<Integer>> consumerList = generateConsumers(threadNum);
     CompletableFuture<Void>[] cfs = new CompletableFuture[threadNum];
     for (int i = 0; i < threadNum; i++) {
       cfs[i] = CompletableFuture
@@ -57,5 +36,32 @@ public class ThreadFoo {
       locks.add(new Object());
     }
     return locks;
+  }
+
+  public static List<Supplier<Integer>> generateConsumers(int size) {
+    List<Supplier<Integer>> consumerList = new ArrayList<>(size);
+
+    Supplier<Integer> consumerA = () -> {
+      if(num <= endPoint) {
+        System.out.println("A:" + num);
+      }
+      return num++;
+    };
+    Supplier<Integer> consumerB = () -> {
+      if(num <= endPoint) {
+        System.out.println("B:" + num);
+      }
+      return num++;
+    };
+    Supplier<Integer> consumerC = () -> {
+      if(num <= endPoint) {
+        System.out.println("C:" + num);
+      }
+      return num++;
+    };
+    consumerList.add(consumerA);
+    consumerList.add(consumerB);
+    consumerList.add(consumerC);
+    return consumerList;
   }
 }
