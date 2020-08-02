@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 public class ThreadFoo {
@@ -15,27 +18,35 @@ public class ThreadFoo {
   public static final int endPoint = 20;
 
   public static void main(String[] args) throws Exception {
-    List<Object> lockLists = generateLocks(threadNum);
+    Lock lock = new ReentrantLock();
+    List<Condition> conditionList = generateConditions(lock, threadNum);
     List<Supplier<Integer>> consumerList = generateConsumers(threadNum);
     CompletableFuture<Void>[] cfs = new CompletableFuture[threadNum];
     for (int i = 0; i < threadNum; i++) {
       cfs[i] = CompletableFuture
-          .runAsync(new PrintNumThread(i, lockLists, endPoint, consumerList.get(i)));
+          .runAsync(new PrintNumThread(i, lock, conditionList, endPoint, consumerList.get(i)));
     }
-    Thread.sleep(300);
-    synchronized (lockLists.get(0)) {
-      lockLists.get(0).notifyAll();
+    Thread.sleep(500);
+    lock.lock();
+    try {
+      conditionList.get(0).signalAll();
+    } catch (Exception e) {
+    } finally {
+      lock.unlock();
     }
+
     CompletableFuture.allOf(cfs).join();
     System.out.printf("done");
   }
 
-  public static List<Object> generateLocks(int size) {
-    List<Object> locks = new LinkedList<>();
+  public static List<Condition> generateConditions(Lock lock, int size) {
+    List<Condition> conditionList = new LinkedList<>();
     for (int i = 0; i < size; i++) {
-      locks.add(new Object());
+      conditionList.add(lock.newCondition());
     }
-    return locks;
+    conditionList.add(conditionList.get(0));
+ //   System.out.println("condition obj" + JSON.toJSONString(conditionList));
+    return conditionList;
   }
 
   public static List<Supplier<Integer>> generateConsumers(int size) {
