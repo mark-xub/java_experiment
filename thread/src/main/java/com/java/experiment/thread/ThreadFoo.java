@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,7 +16,7 @@ public class ThreadFoo {
 
   public static final int threadNum = 3;
 
-  public static final int endPoint = 20;
+  public static final int endPoint = 1000;
 
   public static void main(String[] args) throws Exception {
     Lock lock = new ReentrantLock();

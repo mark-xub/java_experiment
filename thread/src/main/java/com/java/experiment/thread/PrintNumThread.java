@@ -16,16 +16,16 @@ public class PrintNumThread implements Runnable {
   private Condition condition;
   private Condition nextCondition;
   private final int endPoint;
-  private Supplier<Integer> printAndReturn;
+  private Supplier<Integer> printAndReturnCurrent;
 
   public PrintNumThread(int seq, Lock lock, List<Condition> conditionList, int endPoint,
-      Supplier<Integer> printAndReturn) {
+      Supplier<Integer> printAndReturnCurrent) {
     this.seq = seq;
     this.lock = lock;
     this.condition = conditionList.get(seq);
     this.nextCondition = conditionList.get(seq + 1);
     this.endPoint = endPoint;
-    this.printAndReturn = printAndReturn;
+    this.printAndReturnCurrent = printAndReturnCurrent;
   }
 
   @Override
@@ -35,7 +35,7 @@ public class PrintNumThread implements Runnable {
       try {
         //    System.out.println("seq await:" + seq);
         this.condition.await();
-        int num = printAndReturn.get();
+        int num = printAndReturnCurrent.get();
         //   System.out.println("seq signal:" + seq);
         this.nextCondition.signalAll();
         if (num > endPoint) {
