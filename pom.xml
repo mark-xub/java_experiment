@@ -24,6 +24,7 @@
         <module>spock-experiment</module>
         <module>flowable-experiment</module>
         <module>thread</module>
+      <module>leetcode-solutions</module>
     </modules>
 
     <dependencies>
