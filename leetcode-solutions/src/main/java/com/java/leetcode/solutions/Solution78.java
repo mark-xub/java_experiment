@@ -7,7 +7,7 @@ import java.util.List;
  * @author: mark
  * @date: 2021/4/2
  */
-public class SolutionN78 {
+public class Solution78 {
 
   /**
    * 位运算,枚举
@@ -57,7 +57,7 @@ public class SolutionN78 {
 
   public static void main(String[] args) {
     int[] nums = {1, 2, 3};
-    List<List<Integer>> res = new SolutionN78().subsetsDFS(nums);
+    List<List<Integer>> res = new Solution78().subsetsDFS(nums);
     System.out.println(res);
   }
 }
