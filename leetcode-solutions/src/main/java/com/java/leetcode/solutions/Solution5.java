@@ -35,7 +35,7 @@ public class Solution5 {
           if(i+1> len){
             return s.substring(j);
           }
-          return s.substring(j, i);
+          return s.substring(j, i+1);
         }
       }
     }
