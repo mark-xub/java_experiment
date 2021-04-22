@@ -50,11 +50,13 @@ class LRUCache {
       size--;
     }
     else {
-      current = new Node(value);
+      current = new Node(key, value);
       if(size == capacity) {
-        removeLast();
+        Node last = removeLast();
+        indexMap.remove(last.key);
         size--;
       }
+      indexMap.put(key, current);
     }
     addToHead(current);
     size++;
@@ -66,39 +68,37 @@ class LRUCache {
     preNext.pre = node;
     node.pre = head;
     node.next = preNext;
-    indexMap.put(node.val, node);
   }
 
   private void removeNode(Node node) {
     node.pre.next = node.next;
-    indexMap.remove(node.val);
+    node.next.pre = node.pre;
   }
 
-  private void removeLast() {
-    if(size == 0) {
-      return;
-    }
+  private Node removeLast() {
     Node last = tail.pre;
-    indexMap.remove(last.val);
-    last.pre.next = tail;
+    removeNode(last);
+    return last;
   }
 
   class Node {
     Node pre;
     Node next;
+    Integer key;
     Integer val;
     public Node(){}
-    public Node(int val) {
+    public Node(int key, int val) {
+      this.key = key;
       this.val = val;
     }
   }
 
   public static void main(String[] args) {
-    LRUCache cache = new LRUCache( 2 /* 缓存容量 */ );
+    LRUCache cache = new LRUCache( 1 /* 缓存容量 */ );
 
-    cache.put(1, 1);
-    cache.put(2, 2);
-    cache.get(1);       // 返回  1
+    cache.put(2, 1);
+    System.out.println(cache.get(1));
+         // 返回  1
     cache.put(3, 3);    // 该操作会使得密钥 2 作废
     cache.get(2);       // 返回 -1 (未找到)
     cache.put(4, 4);    // 该操作会使得密钥 1 作废
