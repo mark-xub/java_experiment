@@ -54,7 +54,7 @@ public class FileSystem {
 
 
     public boolean create(String path, Integer value) {
-        if(StringUtils.isBlank(path) || !path.contains("/")) {
+        if(StringUtils.isBlank(path) || !path.contains("/") || path.length() == 1) {
             return false;
         }
         if(isParentExist(path)) {
@@ -68,16 +68,24 @@ public class FileSystem {
         return pathMap.getOrDefault(path, -1);
     }
 
+
+    public static void test(String expect, Object result) {
+        System.out.println("expect:" + expect + " return: " + result);
+
+    }
     public static void main(String[] args) {
 
         FileSystem fileSystem =  new FileSystem();
+        test("false", fileSystem.create("/", 1));
+        test("false", fileSystem.create("/c/d", 1));
+        test("-1", fileSystem.get("/c"));
+
+
 //        System.out.println(fileSystem.isParentExist("/cc"));
 //        System.out.println(fileSystem.isParentExist("/cc/bb"));
 //        System.out.println(fileSystem.isParentExist("cc"));
 //        System.out.println(fileSystem.isParentExist("/"));
 //        System.out.println(fileSystem.create("/c/d", 1));
-        System.out.println(fileSystem.create("/c/d", 1));
-        System.out.println(fileSystem.get("/c"));
     }
 
 }
